@@ -1,8 +1,11 @@
-###########################################################################
-###### Para correr este codigo, debes poner los archivos llamados    ######
-###### cruzadaDOF.csv, pobrezaCONEVAL.csv y elecciones2013.csv       ######
-###### en el working directory de tu sesion de R.                    ######
-###########################################################################
+##############################################################################
+###### Para correr este codigo, debes poner los archivos llamados       ######
+###### cruzadaDOF.csv, pobrezaCONEVAL.csv y elecciones2013.csv          ######
+###### en el working directory de tu sesion de R.                       ######
+###### Estos archivos fueron construidos con los datos que aparecen     ######
+###### en los pdf del Diario Oficial de la Federacion correspondientes, ###### 
+###### puedes bajar los csv aqui: http://bit.ly/1JIshDU                 ######
+##############################################################################
 
 
 rm(list=ls())
