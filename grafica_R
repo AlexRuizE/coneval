@@ -1,0 +1,35 @@
+###########################################################################
+###### Para correr este codigo, debes poner los archivos llamados    ######
+###### cruzadaDOF.csv, pobrezaCONEVAL.csv y elecciones2013.csv       ######
+###### en el working directory de tu sesion de R.                    ######
+###########################################################################
+
+
+rm(list=ls())
+
+cruzada<-read.csv("cruzadaDOF.csv", header=T) # Cruzada Nacional Contra el Hambre (Diario Oficial de la Federacion)
+    cruzada$clavemun<-formatC(cruzada$clavemun, width = 5, format = "d", flag = "0")
+pobrezaalim<-read.csv("pobrezaCONEVAL.csv", header=T, as.is=T) # Pobreza CONEVAL
+    pobrezaalim$clavemun<-formatC(pobrezaalim$clavemun, width = 5, format = "d", flag = "0")
+    pobrezaalim$claveedo<-formatC(pobrezaalim$claveedo, width = 2, format = "d", flag = "0")
+    pobrezaalim[,c(6, 8, 10)]<-pobrezaalim[,c(6, 8, 10)]/100
+elec13<-read.csv("elecciones2013.csv", header=T) # elecciones estatales 2013
+    elec13$claveedo<-formatC(elec13$claveedo, width = 2, format = "d", flag = "0")
+    
+base<-merge(pobrezaalim, cruzada, by="clavemun", all.x=T)
+base<-merge(base, elec13, by="claveedo", all.x=T) # checar con identical(unique(base$claveedo), elec13$claveedo)
+
+base$cruzada[is.na(base$cruzada)]<-0 # Municipios excluidos
+sum(base$cruzada) # 400 municipios incluidos
+base$elections2013[is.na(base$elections2013)]<-0 # Municipios SIN elecciones 2013
+
+
+# Carencia alimentaria
+x<-log(base$carencalim.pax) # Numero de personas
+y<-log(base$carencalim.porc) # Proporcion
+
+plot(x[which(base$cruzada==0 & base$elections2013==0)], y[which(base$cruzada==0 & base$elections2013==0)], cex=.6, pch=20, xlab="No. de personas (log)", ylab="Proporción (log)", 
+  bty="n", cex.lab=1.4, mgp=c(2.6,1,0), main="Carencia Alimentaria", xlim=c(2,15), ylim=c(-4,0), col="gray50")
+points(x[which(base$cruzada==1 & base$elections2013==0)], y[which(base$cruzada==1 & base$elections2013==0)], pch=20, col="red", cex=.9)
+points(x[which(base$cruzada==1 & base$elections2013==1)], y[which(base$cruzada==1 & base$elections2013==1)], pch=2, col="red", cex=.9)
+legend("bottomright", legend=c("Incluido con elecc.", "Incluido sin elecc.", "Excluido"), pch=c(2,20, 20), pt.cex=c(1, .9, .5), lty=c(0,0, 0), col=c("red", "red", "gray50"), bty="n", inset=.1, cex=1.4)
